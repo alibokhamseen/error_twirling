@@ -46,6 +46,8 @@ class CommutatorGeneratorTables:
         self.generator_table = None
 
     def zeta(self, g_i, g_j):
+        """Checks if the elements of each matrix commute or anticommute 
+        and returns 1 or -1 respectively"""
         commutator = g_i * g_j - g_j * g_i  
         anticommutator = g_i * g_j + g_j * g_i  
         
@@ -57,6 +59,7 @@ class CommutatorGeneratorTables:
             return 0  
 
     def create_commutator_table(self):
+        """Generates commutator table based on interactive of A and B matrices"""
         self.commutator_table = np.zeros((self.A.shape[0], self.B.shape[1]), dtype=int)
 
         for i in range(self.A.shape[0]):
@@ -69,9 +72,11 @@ class CommutatorGeneratorTables:
         return self.commutator_table
 
     def generator_zeta(self, i, j):
+        """Finds values for delta_{ij} element"""
         return 1 - 2 * (i == j)
 
     def create_generator_table(self):
+        """Creates table based on delta function"""
         self.generator_table = np.zeros((self.size, self.size), dtype=int)
 
         for i in range(self.size):
