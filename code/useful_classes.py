@@ -38,9 +38,13 @@ class Paulis:
 
 class CommutatorGeneratorTables:
     """Create Commutator and Generator Tables for Given Matrices A & B"""
-    def __init__(self, A=None, B=None, size=3):
-        self.A = A if A is not None else np.random.rand(3, 3)
-        self.B = B if B is not None else np.random.rand(3, 3)
+    def __init__(self, 
+                 A: list[np.ndarray]=None, 
+                 B: list[np.ndarray]=None, 
+                 size: int=1
+                 ) -> None:
+        self.A = A if A is not None else np.random.rand(size, 2**size, 2**size)
+        self.B = B if B is not None else np.random.rand(size, 2**size, 2**size)
         self.size = size
         self.commutator_table = None
         self.generator_table = None
