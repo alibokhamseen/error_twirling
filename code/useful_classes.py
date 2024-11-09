@@ -19,7 +19,7 @@ class Paulis:
         
         # Generate all multi-qubit Pauli strings and matrices
         pauli_labels = ["I", "X", "Y", "Z"]
-        self.multi_p_string = np.array(list(product(pauli_labels, repeat=n)), dtype=str)
+        self.multi_p_string = [''.join(p) for p in product(pauli_labels, repeat=n)]
         self.multi_p = {''.join(label): np.linalg.multi_dot([self.single_p[pauli] for pauli in label])
                         for label in self.multi_p_string}
     
