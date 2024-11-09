@@ -46,10 +46,10 @@ class CommutatorGeneratorTables:
         self.generator_table = None
 
     def zeta(self, g_i, g_j):
-        """Checks if the elements of each matrix commute or anticommute and returns 1 or -1 respectively"""
+         """"""
         # Ensure g_i and g_j are matrices
-        commutator = np.dot(g_i, g_j) - np.dot(g_j, g_i)  # [g_i, g_j]
-        anticommutator = np.dot(g_i, g_j) + np.dot(g_j, g_i)  # {g_i, g_j}
+        commutator = g_i @ g_j - g_j @ g_i  # [g_i, g_j]
+        anticommutator = g_i @ g_j + g_j @ g_i  # {g_i, g_j}
         
         if np.allclose(commutator, 0):
             return 1  # [g_i, g_j] = 0 (commute)
