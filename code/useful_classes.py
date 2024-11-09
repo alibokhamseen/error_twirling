@@ -37,8 +37,8 @@ class Paulis:
         return self.multi_p[inp]
 
 class CommutatorGeneratorTables:
-    """"Create Commutator and Generator Tables for Given Matrices A & B"""
-    def __init__(self, A = None, B = None, size = 3):
+    """Create Commutator and Generator Tables for Given Matrices A & B"""
+    def __init__(self, A=None, B=None, size=3):
         self.A = A if A is not None else np.random.rand(3, 3)
         self.B = B if B is not None else np.random.rand(3, 3)
         self.size = size
@@ -46,28 +46,31 @@ class CommutatorGeneratorTables:
         self.generator_table = None
 
     def zeta(self, g_i, g_j):
-        """Checks if the elements of each matrix commute or anticommute 
-        and returns 1 or -1 respectively"""
-        commutator = g_i * g_j - g_j * g_i  
-        anticommutator = g_i * g_j + g_j * g_i  
+        """Checks if the elements of each matrix commute or anticommute and returns 1 or -1 respectively"""
+        # Ensure g_i and g_j are matrices
+        commutator = np.dot(g_i, g_j) - np.dot(g_j, g_i)  # [g_i, g_j]
+        anticommutator = np.dot(g_i, g_j) + np.dot(g_j, g_i)  # {g_i, g_j}
         
-        if commutator == 0:
-            return 1 
-        elif anticommutator == 0:
-            return -1 
+        if np.allclose(commutator, 0):
+            return 1  # [g_i, g_j] = 0 (commute)
+        elif np.allclose(anticommutator, 0):
+            return -1  # {g_i, g_j} = 0 (anticommute)
         else:
-            return 0  
+            return 0  # Default value if not meeting either condition
 
     def create_commutator_table(self):
-        """Generates commutator table based on interactive of A and B matrices"""
+        """Generates commutator table based on interaction of A and B matrices"""
         self.commutator_table = np.zeros((self.A.shape[0], self.B.shape[1]), dtype=int)
 
         for i in range(self.A.shape[0]):
             for j in range(self.B.shape[1]):
                 try:
-                    self.commutator_table[i, j] = self.zeta(self.A[i, j], self.B[i, j])
+                    # Extract submatrices for matrix operations
+                    g_i = self.A[i, :].reshape(-1, 1)
+                    g_j = self.B[:, j].reshape(1, -1)
+                    self.commutator_table[i, j] = self.zeta(g_i, g_j)
                 except ValueError:
-                    self.commutator_table[i, j] = 0  
+                    self.commutator_table[i, j] = 0  # Set a default value for undefined cases
 
         return self.commutator_table
 
