@@ -46,9 +46,10 @@ class CommutatorGeneratorTables:
         self.generator_table = None
 
     def zeta(self, g_i, g_j):
-         """"""
+        """"""
         # Ensure g_i and g_j are matrices
         commutator = g_i @ g_j - g_j @ g_i  # [g_i, g_j]
+
         anticommutator = g_i @ g_j + g_j @ g_i  # {g_i, g_j}
         
         if np.allclose(commutator, 0):
