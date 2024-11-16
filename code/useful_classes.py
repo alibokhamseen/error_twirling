@@ -36,59 +36,7 @@ class Paulis:
         assert len(inp) == self.n, "Input length does not match the number of qubits"
         return self.multi_p[inp]
 
-class CommutatorGeneratorTables:
-    """Create Commutator and Generator Tables for Given Matrices A & B"""
-    def __init__(self, 
-                 A: list[np.ndarray]=None, 
-                 B: list[np.ndarray]=None, 
-                 size: int=1
-                 ) -> None:
-        self.A = A if A is not None else np.random.rand(size, 2**size, 2**size)
-        self.B = B if B is not None else np.random.rand(size, 2**size, 2**size)
-        self.size = size
-        self.commutator_table = None
-        self.generator_table = None
 
-    def zeta(self, g_i, g_j):
-        """"""
-        # Ensure g_i and g_j are matrices
-        commutator = g_i @ g_j - g_j @ g_i  # [g_i, g_j]
-
-        anticommutator = g_i @ g_j + g_j @ g_i  # {g_i, g_j}
         
-        if np.allclose(commutator, 0):
-            return 1  # [g_i, g_j] = 0 (commute)
-        elif np.allclose(anticommutator, 0):
-            return -1  # {g_i, g_j} = 0 (anticommute)
-        else:
-            return 0  # Default value if not meeting either condition
 
-    def create_commutator_table(self):
-        """Generates commutator table based on interaction of A and B matrices"""
-        self.commutator_table = np.zeros((self.A.shape[0], self.B.shape[1]), dtype=int)
-
-        for i in range(self.A.shape[0]):
-            for j in range(self.B.shape[1]):
-                try:
-                    # Extract submatrices for matrix operations
-                    g_i = self.A[i, :].reshape(-1, 1)
-                    g_j = self.B[:, j].reshape(1, -1)
-                    self.commutator_table[i, j] = self.zeta(g_i, g_j)
-                except ValueError:
-                    self.commutator_table[i, j] = 0  # Set a default value for undefined cases
-
-        return self.commutator_table
-
-    def generator_zeta(self, i, j):
-        """Finds values for delta_{ij} element"""
-        return 1 - 2 * (i == j)
-
-    def create_generator_table(self):
-        """Creates table based on delta function"""
-        self.generator_table = np.zeros((self.size, self.size), dtype=int)
-
-        for i in range(self.size):
-            for j in range(self.size):
-                self.generator_table[i, j] = self.generator_zeta(i, j)
-
-        return self.generator_table
+    
