@@ -63,22 +63,7 @@ class CommutatorGeneratorTables:
         else:
             return 0  # Default value if not meeting either condition
 
-    def create_commutator_table(self):
-        """Generates commutator table based on interaction of A and B matrices"""
-        self.commutator_table = np.zeros((self.A.shape[0], self.B.shape[1]), dtype=int)
-
-        for i in range(self.A.shape[0]):
-            for j in range(self.B.shape[1]):
-                try:
-                    # Extract submatrices for matrix operations
-                    g_i = self.A[i, :].reshape(-1, 1)
-                    g_j = self.B[:, j].reshape(1, -1)
-                    self.commutator_table[i, j] = self.zeta(g_i, g_j)
-                except ValueError:
-                    self.commutator_table[i, j] = 0  # Set a default value for undefined cases
-
-        return self.commutator_table
-
+class GeneratorTable(self):
     def generator_zeta(self, i, j):
         """Finds values for delta_{ij} element"""
         return 1 - 2 * (i == j)
@@ -92,3 +77,7 @@ class CommutatorGeneratorTables:
                 self.generator_table[i, j] = self.generator_zeta(i, j)
 
         return self.generator_table
+
+        
+
+    
