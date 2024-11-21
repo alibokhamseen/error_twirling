@@ -43,6 +43,9 @@ This project implements a quantum error correction technique called **Pauli Twir
    ```
 
 ## Example: Pauli Basis for the Noise Channel
+Define your noise channel in the `noise_channel.py` file. For example:
 
+```python
+noise_channel = {'IX': 0.2, 'IZ': 0.3, 'XI': 0.1, 'XX': 0.4}
 
 
