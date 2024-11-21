@@ -34,11 +34,13 @@ This project implements a quantum error correction technique called **Pauli Twir
    ```bash
    git clone https://github.com/your-username/pauli-twirling.git
    cd pauli-twirling
+   ```
 2. Set up a virtual environment and install dependencies:
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
 
 ## Example: Pauli Basis for the Noise Channel
 
