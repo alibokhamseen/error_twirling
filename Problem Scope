@@ -1,10 +1,10 @@
 # Problem Scope Draft
 
 
-Upon receiving a given error channel as an input (in what context?), it would be useful to decompose it into simpler components.
+Upon receiving a given error channel as an input %(in what context?), it would be useful to decompose it into simpler components.
 Such is possible with Twirling: a popular technique used in both real experiments and classical model simulations to represent the given noise input as Pauli channels.
-The set of all possible Pauli matrices is called the Twirling set and minimizing it by creating and utilizing a nonunique subset is paramount in increasing the efficiency of simulations and mitigating the number of runs in experiments.
+The set of all possible Pauli matrices is called the Twirling set ($W$) and minimizing it by creating and utilizing a nonunique subset is paramount in increasing the efficiency of simulations and mitigating the number of runs in experiments.
 >>What is the optimal size of the twirling set and are there trade offs?
->>W is the name of the subset right?
+
 
 In this project we were able to successfully generate the subset of the Twirling set and successfully performed twirling on (What?) to (do what?).
