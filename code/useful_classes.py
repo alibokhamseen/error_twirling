@@ -23,8 +23,24 @@ class Paulis:
         if self.n == 1:
             self.multi_p = self.single_p
         else:
-            self.multi_p = {''.join(label): np.linalg.multi_dot([self.single_p[pauli] for pauli in label])
-                            for label in self.multi_p_string}
+            self.multi_p = {
+                label: self._kronecker_product(label) for label in self.multi_p_string
+            }
+
+    def _kronecker_product(self, label: str) -> np.ndarray:
+        """
+        Computes the Kronecker product of single-qubit Pauli matrices based on the given label.
+        
+        Args:
+            label (str): A string of Pauli operators (e.g., "IXZ").
+            
+        Returns:
+            np.ndarray: The multi-qubit Pauli matrix corresponding to the label.
+        """
+        result = self.single_p[label[0]]
+        for pauli in label[1:]:
+            result = np.kron(result, self.single_p[pauli])
+        return result
     
     def get_p_mat(self, inp: str) -> np.ndarray:
         """
@@ -39,7 +55,5 @@ class Paulis:
         assert len(inp) == self.n, "Input length does not match the number of qubits"
         return self.multi_p[inp]
 
-
-        
 
     
