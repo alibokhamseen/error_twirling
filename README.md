@@ -14,14 +14,23 @@ This project implements a quantum error correction technique called **Pauli Twir
 ## How It Works
 
 ### Input:
-- A **Noise Channel**: The input error channel represented in terms of Pauli basis.
+- **State-Based Noise Channel**: Example:
+   ```bash
+    p1, p2, p3 = 0.1, 0.1, 0.1
+    error = {
+    "01" : {"IX": p3},
+    "10" : {"XX": p2, "XI": p3},
+    "11" : {"IX": p1, "XI": p2, "XX": p3}
+    }
+   ```
+   The input variable "error" is a dictionary of states 01, 10, and 11. Each state is a dictionary of the Pauli operators and their associated probabilty. State 10 applies operators XX with probability p2 and XI with probability p3. 
 
 ### Intermediate Outputs:
 1. **Generate Twirling Set**: Derive a minimal twirling gate set from the noise channel.
 2. **Operate on Noise Channel**: Apply the twirling set to transform the noise channel into a Pauli channel.
 
 ### Final Output:
-- **Probabilities of Pauli Matrices**: The resultant Pauli channel expressed as a probability distribution over Pauli errors.
+- **State-Based Noise Channel**: A dictionary of states, each state a dictionary of Pauli operators and their associated probability. Same structure as the input.
 
 ## Features
 - Efficiently generates optimized twirling sets using the symmetries in noise channels.
