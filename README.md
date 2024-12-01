@@ -13,8 +13,16 @@ This project implements a quantum error correction technique called **Pauli Twir
 
 ## How It Works
 
-### Input:
-- **State-Based Noise Channel**: Example:
+The Pauli Twirling method is completed entirely by the `twirl()` function.
+```bash
+twirl(error: dict[str: dict]) -> dict[str: float]
+```
+
+### Inputs:
+- **error: dict[str: dict]**\
+A state-based noise channel.
+
+Example:
    ```bash
     p1, p2, p3 = 0.1, 0.1, 0.1
     error = {
@@ -23,17 +31,21 @@ This project implements a quantum error correction technique called **Pauli Twir
     "11" : {"IX": p1, "XI": p2, "XX": p3}
     }
    ```
-   The input variable "error" is a dictionary of states 01, 10, and 11. Each state is a dictionary of the Pauli operators and their associated probabilty. State 10 applies operators XX with probability p2 and XI with probability p3. 
-
-### Intermediate Outputs:
-1. **Generate Twirling Set**: Derive a minimal twirling gate set from the noise channel.
-2. **Operate on Noise Channel**: Apply the twirling set to transform the noise channel into a Pauli channel.
+   The input variable "error" is a dictionary of states 01, 10, and 11. Each state is a dictionary of the Pauli operators and their associated probabilty. State 10 applies operators XX with probability p2 and XI with probability p3.
 
 ### Final Output:
-- **State-Based Noise Channel**: A dictionary of states, each state a dictionary of Pauli operators and their associated probability. Same structure as the input.
+- **dict[str: dict]**: A dictionary of states, each state a dictionary of Pauli operators and their associated probability. Same structure as the input.
 
+Example:
+```bash
+twirling_results = twirl(error, num_qubits)
+print(twirling_results)
+```
+Output:
+```
+
+```
 ## Features
-- Efficiently generates optimized twirling sets using the symmetries in noise channels.
 - Simulates the twirling operation to calculate error probabilities.
 - Outputs results for use in quantum error correction simulations and analysis.
 
