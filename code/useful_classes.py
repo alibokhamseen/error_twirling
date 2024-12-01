@@ -1,5 +1,7 @@
 import numpy as np
 from itertools import product
+from functools import reduce
+
 
 class Paulis:
     def __init__(self, n: int = 1) -> None:
@@ -19,9 +21,28 @@ class Paulis:
         
         # Generate all multi-qubit Pauli strings and matrices
         pauli_labels = ["I", "X", "Y", "Z"]
-        self.multi_p_string = [''.join(p) for p in product(pauli_labels, repeat=n)]
-        self.multi_p = {''.join(label): np.linalg.multi_dot([self.single_p[pauli] for pauli in label])
-                        for label in self.multi_p_string}
+        self.multi_p_string = [''.join(p) for p in product(pauli_labels, repeat=self.n)]
+        if self.n == 1:
+            self.multi_p = self.single_p
+        else:
+            self.multi_p = {
+                label: self._kronecker_product(label) for label in self.multi_p_string
+            }
+
+    def _kronecker_product(self, label: str) -> np.ndarray:
+        """
+        Computes the Kronecker product of single-qubit Pauli matrices based on the given label.
+        
+        Args:
+            label (str): A string of Pauli operators (e.g., "IXZ").
+            
+        Returns:
+            np.ndarray: The multi-qubit Pauli matrix corresponding to the label.
+        """
+        result = self.single_p[label[0]]
+        for pauli in label[1:]:
+            result = np.kron(result, self.single_p[pauli])
+        return result
     
     def get_p_mat(self, inp: str) -> np.ndarray:
         """
@@ -37,6 +58,16 @@ class Paulis:
         return self.multi_p[inp]
 
 
+class Q_states:
+    def __init__(self, n) -> None:
+        self.n = n
+        self.states = {}
+        self._generate_vector_states()
         
-
-    
+    def _generate_vector_states(self) -> None:
+        z = np.array([1, 0])
+        o = np.array([0, 1])
+        q_state = {"0": z, "1": o}
+        states = ["".join(p) for p in product(["0", "1"], repeat=self.n)]
+        for s in states:
+            self.states[s] = reduce(np.kron, [q_state[q] for q in list(s)])
