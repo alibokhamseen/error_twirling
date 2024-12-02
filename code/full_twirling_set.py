@@ -3,7 +3,38 @@ from useful_classes import Paulis, Q_states
 from sympy import Matrix
 
 
-def _validate_error_channel(error_matrix, n_qubits):
+
+def _find_generating_set(V: list[str]) -> list[str]: # for future use
+    """
+    Finds a generating set of vectors using sympy rref (identifies a linearly independent set)
+
+    Args:
+        V: A list of Pauli operators (e.g., ["XX", "YY", "ZZ"]).
+
+    Returns:
+        list[str]: A list of Pauli basis representing a generating set of input V
+    """
+    vectors = [_pauli_to_binary(v) for v in V] # Convert Pauli operators to binary vectors
+    matrix = np.array(vectors)
+    M = Matrix(matrix.T)
+    rref_matrix, pivot_columns = M.rref()
+    generating_set = [V[i] for i in pivot_columns]
+    return generating_set
+
+def _pauli_to_binary(pauli) -> list[int]: # for future use with _find_generating_set
+    """
+    Converts a Pauli operator to its binary vector representation.
+
+    Args:
+        pauli (str): Pauli operator (e.g., "IX", "IZ").
+
+    Returns:
+        list[int]: Binary vector representation.
+    """
+    mapping = {'I': (0, 0), 'X': (1, 0), 'Z': (0, 1), 'Y': (1, 1)}
+    return [bit for char in pauli for bit in mapping[char]]
+
+def _validate_error_channel(error_matrix, n_qubits): # for future use to support different type of input
     """
     Validate an error channel matrix.
     Reports all validation errors simultaneously.
@@ -16,8 +47,6 @@ def _validate_error_channel(error_matrix, n_qubits):
     - ValueError: If the matrix fails any of the validation checks.
     """
     errors = [] 
-    print(error_matrix)
-
     # Check if square
     if error_matrix.shape[0] != error_matrix.shape[1]:
         errors.append("Error channel matrix must be square.")
@@ -40,6 +69,41 @@ def _validate_error_channel(error_matrix, n_qubits):
     if errors:
         raise ValueError("Validation errors in error channel matrix:\n" + "\n".join(errors))
     print("Error channel matrix is valid.")
+
+def validate_kraus_operators(K: list[np.ndarray]) -> None:
+    """
+    Validate a list of Kraus operators to ensure they form a valid quantum channel.
+    
+    Args:
+        K (list of np.ndarray): List of Kraus operators.
+
+    Raises:
+        ValueError: If the completeness relation is not satisfied.
+        TypeError: If any Kraus operator is not a NumPy array or if the list is empty.
+        ValueError: If Kraus operators have inconsistent dimensions.
+    """
+    # Ensure the input is a list of NumPy arrays
+    if not isinstance(K, list) or not all(isinstance(k, np.ndarray) for k in K):
+        raise TypeError("Kraus operators must be a list of NumPy arrays.")
+
+    # Ensure the list is not empty
+    if len(K) == 0:
+        raise ValueError("The list of Kraus operators cannot be empty.")
+
+    # Check dimensional consistency
+    dims = [k.shape for k in K]
+    if not all(dim == dims[0] for dim in dims):
+        raise ValueError("All Kraus operators must have the same dimensions.")
+
+    # Ensure Kraus operators are square matrices
+    if not all(k.shape[0] == k.shape[1] for k in K):
+        raise ValueError("Each Kraus operator must be a square matrix.")
+
+    # Validate completeness relation
+    identity = np.eye(K[0].shape[0], dtype=np.complex128)
+    completeness = sum(k.conj().T @ k for k in K)
+    if not np.allclose(completeness, identity, atol=1e-10):
+        raise ValueError("Kraus operators do not satisfy the completeness relation.")
 
 def get_kraus_operators(error_model: dict[str: dict], P: Paulis):
     """
@@ -65,19 +129,17 @@ def get_kraus_operators(error_model: dict[str: dict], P: Paulis):
             if error == "I" * num_qubits:
                 continue
             e_prob += prob
-            kraus_operators.append(np.sqrt(prob) * P.multi_p[error] @ np.outer(s, s)  )
-        i_kraus += np.sqrt(1 - e_prob) * P.multi_p["I" * num_qubits] @ np.outer(s, s)
+            kraus_operators.append(np.sqrt(prob) * P.multi_p[error] @ np.outer(s, s.conj()) )
+        i_kraus += np.sqrt(1 - e_prob) * P.multi_p["I" * num_qubits] @ np.outer(s, s.conj())
     kraus_operators.append(i_kraus)
-    for k in kraus_operators:
-        print(k)
     return kraus_operators
 
-def _get_pauli_probabilities(E: np.ndarray, W: list[str], P: Paulis) -> list[float]:
+def _get_pauli_probabilities(K: list[np.ndarray], W: list[str], P: Paulis) -> list[float]:
     """
     Extract probabilities of Pauli errors from an error channel matrix.
 
     Parameters:
-    - E (np.ndarray): The error channel matrix.
+    - K (list[np.ndarray]): List of Kraus operators.
     - W (list[str]): Twirling set of Pauli operators as strings.
 
     Returns:
@@ -85,14 +147,19 @@ def _get_pauli_probabilities(E: np.ndarray, W: list[str], P: Paulis) -> list[flo
     """
     d = 2 ** P.n
     probabilities = []
-    for w in W:
-        # Compute the coefficient c_v for the Pauli operator
-        c_w = np.trace(P.multi_p[w] @ E) / d
-        # Calculate the probability as the squared magnitude of c_v
-        probabilities.append(np.abs(c_w) ** 2)
+    for s in W:
+        w = P.multi_p[s]
+        c_w = 0
+        E_m = np.zeros_like(w)
+        for k in K:
+            # c_w += np.trace(w @ k @ k.conj().T) / d
+            E_m += w @ k @ w.conj().T
+        
+        c_w = np.abs(np.trace(w @ E_m) / d)
+        probabilities.append(c_w)
     return np.array(probabilities)
 
-def twirl(error: dict[str: dict], num_qubits: int) -> dict[str: float]:
+def twirl(error: dict[str: dict]) -> dict[str: float]:
     """
     Do the twirling given a state based error model.
 
@@ -106,39 +173,34 @@ def twirl(error: dict[str: dict], num_qubits: int) -> dict[str: float]:
     Returns:
     - dict[str: float]: A dict of each Pauli error with its probability.
     """
+    num_qubits = len(next(iter(error)))
     P = Paulis(num_qubits)
     K = get_kraus_operators(error, P)
-    E = sum([np.matmul(k.T, k) for k in K])
-    _validate_error_channel(E, num_qubits)
-    
-    probabilities = np.zeros(4 ** num_qubits)
-    for k in K:
-        twirling_set = P.multi_p_string
-        probabilities += _get_pauli_probabilities(k, twirling_set, P)
-    results = {key: value for key, value in zip(twirling_set, probabilities) if value != 0}
+    validate_kraus_operators(K)
+    twirling_set = P.multi_p_string
+    probabilities = _get_pauli_probabilities(K, twirling_set, P)
+    results = {key: value for key, value in zip(twirling_set, probabilities) if value > 1e-8}
     return results
 
 
 
 def main():
-    p1, p2, p3 = 0.1, 0.1, 0.1
+    p1, p2, p3 = 0.3, 0.3, .3
     error = {
     "01" : {"IX": p3},
     "10" : {"XX": p2, "XI": p3},
     "11" : {"IX": p1, "XI": p2, "XX": p3}
     }
     error = {
-    "11" : {"XX": 1}
+    "11" : {"XX": 0.1}
     }
-    num_qubits = 2
 
     error = {
         # "0" : {"I" : 1},
-        "1" : {"X" : 1}
+        "1" : {"X" : 0.2}
     }
-    num_qubits = 1
     
-    twirling_results = twirl(error, num_qubits)
+    twirling_results = twirl(error)
     print(twirling_results)
 
 if __name__ == "__main__":
