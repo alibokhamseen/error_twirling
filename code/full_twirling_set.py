@@ -185,13 +185,13 @@ def twirl(error: dict[str: dict]) -> dict[str: float]:
 
 
 def main():
-    p1, p2, p3 = 0.3, 0.3, .3
-    error = {
-    "01" : {"IX": p3},
-    "10" : {"XX": p2, "XI": p3},
-    "11" : {"IX": p1, "XI": p2, "XX": p3}
+    p0, p1, p2, p3, p4, p5 = 0.3, 0.3, .3
+    error_model = {
+    "01" : {"IX": p5},
+    "10" : {"XX": p3, "XI": p4},
+    "11" : {"IX": p0, "XI": p1, "XX": p2}
     }
-    error = {
+    error_model = {
     "11" : {"XX": 0.1}
     }
 
@@ -200,7 +200,7 @@ def main():
         "1" : {"X" : 0.2}
     }
     
-    twirling_results = twirl(error)
+    twirling_results = twirl(error_model)
     print(twirling_results)
 
 if __name__ == "__main__":
