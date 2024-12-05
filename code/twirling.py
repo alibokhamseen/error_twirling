@@ -6,14 +6,28 @@ from sympy import Matrix
 
 def _find_generating_set(V: list[str]) -> list[str]: # for future use
     """
-    Finds a generating set of vectors using sympy rref (identifies a linearly independent set)
-
-    Args:
-        V: A list of Pauli operators (e.g., ["XX", "YY", "ZZ"]).
-
+    Perform twirling over a state-based error model.
+    
+    This function transforms the input error model into a Pauli error model
+    using a twirling operation. Twirling is applied over the specified number
+    of qubits in the error channel.
+    
+    Parameters:
+        error (dict[str, dict[str, float]]): The state-based error instructions,
+            represented as a nested dictionary. The outer dictionary maps qubit
+            indices to their respective error distributions, and the inner dictionary
+            specifies the type of error and its associated probability.
+            Example:
+            {
+                "0": {"Y": 0.3},
+                "1": {"X": 0.5, "Y": 0.3}
+            }
+        num_qubits (int): The number of qubits in the error channel to apply twirling.
+    
     Returns:
-        list[str]: A list of Pauli basis representing a generating set of input V
-    """
+        dict[str, float]: A dictionary where keys are Pauli errors (e.g., "I", "X", "Y", "Z")
+            and values are their corresponding probabilities after twirling.
+    """    
     vectors = [_pauli_to_binary(v) for v in V] # Convert Pauli operators to binary vectors
     matrix = np.array(vectors)
     M = Matrix(matrix.T)
