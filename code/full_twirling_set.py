@@ -205,19 +205,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-def run_twirling_simulation(error_model: dict[str, dict], num_qubits: int) -> dict[str, float]:
-    """
-    Wrapper function to execute the twirling simulation.
-
-    Args:
-        error_model (dict[str: dict]): Error model with state and error probabilities.
-        num_qubits (int): Number of qubits.
-
-    Returns:
-        dict[str: float]: Twirling results with Pauli errors and probabilities.
-    """
-    P = Paulis(num_qubits)
-    K = get_kraus_operators(error_model, P)
-    validate_kraus_operators(K)
-    return twirl(error_model)
