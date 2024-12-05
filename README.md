@@ -36,15 +36,6 @@ Example:
 ### Final Output:
 - **dict[str: dict]**: A dictionary of states, each state a dictionary of Pauli operators and their associated probability. Same structure as the input.
 
-Example:
-```bash
-twirling_results = twirl(error, num_qubits)
-print(twirling_results)
-```
-Output:
-```
-
-```
 ## Features
 - Simulates the twirling operation to calculate error probabilities.
 - Outputs results for use in quantum error correction simulations and analysis.
