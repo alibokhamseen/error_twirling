@@ -6,14 +6,28 @@ from sympy import Matrix
 
 def _find_generating_set(V: list[str]) -> list[str]: # for future use
     """
-    Finds a generating set of vectors using sympy rref (identifies a linearly independent set)
-
-    Args:
-        V: A list of Pauli operators (e.g., ["XX", "YY", "ZZ"]).
-
+    Perform twirling over a state-based error model.
+    
+    This function transforms the input error model into a Pauli error model
+    using a twirling operation. Twirling is applied over the specified number
+    of qubits in the error channel.
+    
+    Parameters:
+        error (dict[str, dict[str, float]]): The state-based error instructions,
+            represented as a nested dictionary. The outer dictionary maps qubit
+            indices to their respective error distributions, and the inner dictionary
+            specifies the type of error and its associated probability.
+            Example:
+            {
+                "0": {"Y": 0.3},
+                "1": {"X": 0.5, "Y": 0.3}
+            }
+        num_qubits (int): The number of qubits in the error channel to apply twirling.
+    
     Returns:
-        list[str]: A list of Pauli basis representing a generating set of input V
-    """
+        dict[str, float]: A dictionary where keys are Pauli errors (e.g., "I", "X", "Y", "Z")
+            and values are their corresponding probabilities after twirling.
+    """    
     vectors = [_pauli_to_binary(v) for v in V] # Convert Pauli operators to binary vectors
     matrix = np.array(vectors)
     M = Matrix(matrix.T)
@@ -185,13 +199,13 @@ def twirl(error: dict[str: dict]) -> dict[str: float]:
 
 
 def main():
-    p1, p2, p3 = 0.3, 0.3, .3
-    error = {
-    "01" : {"IX": p3},
-    "10" : {"XX": p2, "XI": p3},
-    "11" : {"IX": p1, "XI": p2, "XX": p3}
+    p0, p1, p2, p3, p4, p5 = 0.3, 0.3, .3
+    error_model = {
+    "01" : {"IX": p5},
+    "10" : {"XX": p3, "XI": p4},
+    "11" : {"IX": p0, "XI": p1, "XX": p2}
     }
-    error = {
+    error_model = {
     "11" : {"XX": 0.1}
     }
 
@@ -200,8 +214,27 @@ def main():
         "1" : {"X" : 0.2}
     }
     
-    twirling_results = twirl(error)
+    twirling_results = twirl(error_model)
     print(twirling_results)
 
 if __name__ == "__main__":
     main()
+<<<<<<< HEAD:code/full_twirling_set.py
+=======
+
+def run_twirling_simulation(error_model: dict[str, dict], num_qubits: int) -> dict[str, float]:
+    """
+    Wrapper function to execute the twirling simulation.
+
+    Args:
+        error_model (dict[str: dict]): Error model with state and error probabilities.
+        num_qubits (int): Number of qubits.
+
+    Returns:
+        dict[str: float]: Twirling results with Pauli errors and probabilities.
+    """
+    P = Paulis(num_qubits)
+    K = get_kraus_operators(error_model, P)
+    validate_kraus_operators(K)
+    return twirl(error_model)
+>>>>>>> 57ab837db2af946d63760904bd506fc9ca28808d:code/twirling.py

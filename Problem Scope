@@ -1,10 +1,9 @@
 # Problem Scope Draft
 
 
-Upon receiving a given error channel as an input %(in what context?), it would be useful to decompose it into simpler components.
-Such is possible with Twirling: a popular technique used in both real experiments and classical model simulations to represent the given noise input as Pauli channels.
-The set of all possible Pauli matrices is called the Twirling set ($W$) and minimizing it by creating and utilizing a nonunique subset is paramount in increasing the efficiency of simulations and mitigating the number of runs in experiments.
->>What is the optimal size of the twirling set and are there trade offs?
+Error channels observed in quantum computing aren't trivial, and in some cases, are represented by non-Clifford operators. Clifford operators, which are unitary, 
+have the advantage of being easy to simulate efficiently, as Clifford error channels can be simulated in polynomial time using stabilizer techniques. In contrast, 
+simulating arbitrary error channels typically scales exponentially with the size of the quantum system. Twirling quantum errors approximates complex noise 
+channels as effective Pauli channels, making them computationally efficient to analyze and integrate into simulations.
 
-
-In this project we were able to successfully generate the subset of the Twirling set and successfully performed twirling on (What?) to (do what?).
+In this projext, we implement twirling given a state-based-error-model using the full Pauli twirling set.
