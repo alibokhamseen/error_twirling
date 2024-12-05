@@ -80,36 +80,61 @@ def _validate_error_channel(error_matrix, n_qubits): # for future use to support
         raise ValueError("Validation errors in error channel matrix:\n" + "\n".join(errors))
     print("Error channel matrix is valid.")
 
+# def validate_kraus_operators(K: list[np.ndarray]) -> None:
+#     """
+#     Validate a list of Kraus operators to ensure they form a valid quantum channel.
+    
+#     Args:
+#         K (list of np.ndarray): List of Kraus operators.
+
+#     Raises:
+#         ValueError: If the completeness relation is not satisfied.
+#         TypeError: If any Kraus operator is not a NumPy array or if the list is empty.
+#         ValueError: If Kraus operators have inconsistent dimensions.
+#     """
+#     # Ensure the input is a list of NumPy arrays
+#     if not isinstance(K, list) or not all(isinstance(k, np.ndarray) for k in K):
+#         raise TypeError("Kraus operators must be a list of NumPy arrays.")
+
+#     # Ensure the list is not empty
+#     if len(K) == 0:
+#         raise ValueError("The list of Kraus operators cannot be empty.")
+
+#     # Check dimensional consistency
+#     dims = [k.shape for k in K]
+#     if not all(dim == dims[0] for dim in dims):
+#         raise ValueError("All Kraus operators must have the same dimensions.")
+
+#     # Ensure Kraus operators are square matrices
+#     if not all(k.shape[0] == k.shape[1] for k in K):
+#         raise ValueError("Each Kraus operator must be a square matrix.")
+
+#     # Validate completeness relation
+#     identity = np.eye(K[0].shape[0], dtype=np.complex128)
+#     completeness = sum(k.conj().T @ k for k in K)
+#     if not np.allclose(completeness, identity, atol=1e-10):
+#         raise ValueError("Kraus operators do not satisfy the completeness relation.")
+
 def validate_kraus_operators(K: list[np.ndarray]) -> None:
     """
-    Validate a list of Kraus operators to ensure they form a valid quantum channel.
-    
+    Validates Kraus operators for consistency and completeness.
+
     Args:
-        K (list of np.ndarray): List of Kraus operators.
+        K: List of Kraus operators.
 
     Raises:
-        ValueError: If the completeness relation is not satisfied.
-        TypeError: If any Kraus operator is not a NumPy array or if the list is empty.
-        ValueError: If Kraus operators have inconsistent dimensions.
+        ValueError: If completeness or dimensional checks fail.
     """
-    # Ensure the input is a list of NumPy arrays
-    if not isinstance(K, list) or not all(isinstance(k, np.ndarray) for k in K):
-        raise TypeError("Kraus operators must be a list of NumPy arrays.")
-
-    # Ensure the list is not empty
-    if len(K) == 0:
-        raise ValueError("The list of Kraus operators cannot be empty.")
-
-    # Check dimensional consistency
+    if not K:
+        raise ValueError("Kraus operators list cannot be empty.")
+    
     dims = [k.shape for k in K]
-    if not all(dim == dims[0] for dim in dims):
-        raise ValueError("All Kraus operators must have the same dimensions.")
+    if len(set(dims)) > 1:
+        raise ValueError("Kraus operators must have consistent dimensions.")
 
-    # Ensure Kraus operators are square matrices
-    if not all(k.shape[0] == k.shape[1] for k in K):
+    if any(k.shape[0] != k.shape[1] for k in K):
         raise ValueError("Each Kraus operator must be a square matrix.")
 
-    # Validate completeness relation
     identity = np.eye(K[0].shape[0], dtype=np.complex128)
     completeness = sum(k.conj().T @ k for k in K)
     if not np.allclose(completeness, identity, atol=1e-10):
