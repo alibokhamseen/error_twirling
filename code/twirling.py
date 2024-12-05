@@ -5,29 +5,7 @@ from sympy import Matrix
 
 
 def _find_generating_set(V: list[str]) -> list[str]: # for future use
-    """
-    Perform twirling over a state-based error model.
-    
-    This function transforms the input error model into a Pauli error model
-    using a twirling operation. Twirling is applied over the specified number
-    of qubits in the error channel.
-    
-    Parameters:
-        error (dict[str, dict[str, float]]): The state-based error instructions,
-            represented as a nested dictionary. The outer dictionary maps qubit
-            indices to their respective error distributions, and the inner dictionary
-            specifies the type of error and its associated probability.
-            Example:
-            {
-                "0": {"Y": 0.3},
-                "1": {"X": 0.5, "Y": 0.3}
-            }
-        num_qubits (int): The number of qubits in the error channel to apply twirling.
-    
-    Returns:
-        dict[str, float]: A dictionary where keys are Pauli errors (e.g., "I", "X", "Y", "Z")
-            and values are their corresponding probabilities after twirling.
-    """    
+  
     vectors = [_pauli_to_binary(v) for v in V] # Convert Pauli operators to binary vectors
     matrix = np.array(vectors)
     M = Matrix(matrix.T)
@@ -48,7 +26,7 @@ def _pauli_to_binary(pauli) -> list[int]: # for future use with _find_generating
     mapping = {'I': (0, 0), 'X': (1, 0), 'Z': (0, 1), 'Y': (1, 1)}
     return [bit for char in pauli for bit in mapping[char]]
 
-def _validate_error_channel(error_matrix, n_qubits): # for future use to support different type of input
+def _validate_error_channel(error_matrix, n_qubits): # for future use to support different input format
     """
     Validate an error channel matrix.
     Reports all validation errors simultaneously.
@@ -175,18 +153,27 @@ def _get_pauli_probabilities(K: list[np.ndarray], W: list[str], P: Paulis) -> li
 
 def twirl(error: dict[str: dict]) -> dict[str: float]:
     """
-    Do the twirling given a state based error model.
-
+    Perform twirling over a state-based error model.
+    
+    This function transforms the input error model into a Pauli error model
+    using a twirling operation. Twirling is applied over the specified number
+    of qubits in the error channel.
+    
     Parameters:
-    - error (dict[str: dict]): Error instructions. ex: {
-        "0" : {"y" : 0.3},
-        "1" : {"X" : 0.5, "Y" : 0.3}
-        }
-    - num_qubits (int): Number of qubits in error channel to twirl
-
+        error (dict[str, dict[str, float]]): The state-based error instructions,
+            represented as a nested dictionary. The outer dictionary maps qubit
+            indices to their respective error distributions, and the inner dictionary
+            specifies the type of error and its associated probability.
+            Example:
+            {
+                "0": {"Y": 0.3},
+                "1": {"X": 0.5, "Y": 0.3}
+            }
+    
     Returns:
-    - dict[str: float]: A dict of each Pauli error with its probability.
-    """
+        dict[str, float]: A dictionary where keys are Pauli errors (e.g., "I", "X", "Y", "Z")
+            and values are their corresponding probabilities after twirling.
+    """ 
     num_qubits = len(next(iter(error)))
     P = Paulis(num_qubits)
     K = get_kraus_operators(error, P)
