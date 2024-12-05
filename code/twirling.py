@@ -5,7 +5,25 @@ from sympy import Matrix
 
 
 def _find_generating_set(V: list[str]) -> list[str]: # for future use
-  
+    """
+    Find the generating set of a given set of Pauli operators.
+    
+    This function computes the minimal set of independent Pauli operators that generate 
+    the input set using their binary vector representation.
+    
+    Parameters:
+        V (list[str]): A list of Pauli operators (e.g., ["XX", "YY", "IY"]).
+    
+    Returns:
+        list[str]: A list of Pauli operators that form the generating set.
+                   These operators are selected from the input list.
+    
+    Notes:
+        - The function converts Pauli operators to binary vectors and calculates their 
+          row-reduced echelon form (RREF) to identify the independent generators.
+        - The generating set is useful for constructing stabilizer codes or simplifying
+          Pauli operator sets.
+    """
     vectors = [_pauli_to_binary(v) for v in V] # Convert Pauli operators to binary vectors
     matrix = np.array(vectors)
     M = Matrix(matrix.T)
