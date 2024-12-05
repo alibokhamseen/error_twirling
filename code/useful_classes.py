@@ -2,6 +2,9 @@ import numpy as np
 from itertools import product
 from functools import reduce
 
+"""
+    Classes for internal use. User doesn't need to import this themselves.
+"""
 
 class Paulis:
     def __init__(self, n: int = 1) -> None:
