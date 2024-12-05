@@ -1,4 +1,4 @@
-import full_twirling_set
+import twirling
 
 def main():
     # Define your error model
@@ -9,7 +9,7 @@ def main():
     }
     
     # Call the wrapper function
-    results = full_twirling_set.twirl(error_model)
+    results = twirling.twirl(error_model)
     
     # Display the results
     print("Twirling Results:")

@@ -186,7 +186,7 @@ def twirl(error: dict[str: dict]) -> dict[str: float]:
 
 
 def main():
-    p0, p1, p2, p3, p4, p5 = 0.3, 0.3, .3
+    p0, p1, p2, p3, p4, p5 = 0.3, 0.3, .3, .1, .2, .3
     error_model = {
     "01" : {"IX": p5},
     "10" : {"XX": p3, "XI": p4},
@@ -206,22 +206,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-<<<<<<< HEAD:code/full_twirling_set.py
-=======
-
-def run_twirling_simulation(error_model: dict[str, dict], num_qubits: int) -> dict[str, float]:
-    """
-    Wrapper function to execute the twirling simulation.
-
-    Args:
-        error_model (dict[str: dict]): Error model with state and error probabilities.
-        num_qubits (int): Number of qubits.
-
-    Returns:
-        dict[str: float]: Twirling results with Pauli errors and probabilities.
-    """
-    P = Paulis(num_qubits)
-    K = get_kraus_operators(error_model, P)
-    validate_kraus_operators(K)
-    return twirl(error_model)
->>>>>>> 57ab837db2af946d63760904bd506fc9ca28808d:code/twirling.py
