@@ -80,6 +80,35 @@ def _validate_error_channel(error_matrix, n_qubits): # for future use to support
         raise ValueError("Validation errors in error channel matrix:\n" + "\n".join(errors))
     print("Error channel matrix is valid.")
 
+def _validate_error_model(error_model: dict[str, dict[str, float]]) -> bool:
+    """
+    Validate the error model to ensure the probabilities for each state sum to at most 1.
+
+    Parameters:
+        error_model (dict[str, dict[str, float]]): The error model mapping states to 
+            Pauli errors and their associated probabilities. Example:
+            {
+                "01": {"IX": p5},
+                "10": {"XX": p3, "XI": p4},
+                "11": {"IX": p0, "XI": p1, "XX": p2}
+            }
+
+    Returns:
+        bool: True if the error model is valid, False otherwise.
+
+    Raises:
+        ValueError: If any state has probabilities that exceed 1.
+    """
+    for state, pauli_errors in error_model.items():
+        total_probability = sum(pauli_errors.values())
+        if total_probability > 1:
+            raise ValueError(
+                f"Invalid error model: Probabilities for state '{state}' exceed 1 "
+                f"(total: {total_probability})."
+            )
+    return True
+
+
 # def validate_kraus_operators(K: list[np.ndarray]) -> None:
 #     """
 #     Validate a list of Kraus operators to ensure they form a valid quantum channel.
@@ -217,6 +246,7 @@ def twirl(error: dict[str: dict]) -> dict[str: float]:
         dict[str, float]: A dictionary where keys are Pauli errors (e.g., "I", "X", "Y", "Z")
             and values are their corresponding probabilities after twirling.
     """ 
+    _validate_error_model(error)
     num_qubits = len(next(iter(error)))
     P = Paulis(num_qubits)
     K = get_kraus_operators(error, P)
