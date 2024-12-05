@@ -1,3 +1,5 @@
+"""Example for importing function to use in another project"""
+
 import twirling
 
 def main():
