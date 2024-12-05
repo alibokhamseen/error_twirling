@@ -1,4 +1,4 @@
-# Problem Scope Draft
+# Problem Scope
 
 
 Error channels observed in quantum computing aren't trivial, and in some cases, are represented by non-Clifford operators. Clifford operators, which are unitary, 
@@ -6,4 +6,4 @@ have the advantage of being easy to simulate efficiently, as Clifford error chan
 simulating arbitrary error channels typically scales exponentially with the size of the quantum system. Twirling quantum errors approximates complex noise 
 channels as effective Pauli channels, making them computationally efficient to analyze and integrate into simulations.
 
-In this projext, we implement twirling given a state-based-error-model using the full Pauli twirling set.
+In this project, we implement twirling given a state-based-error-model using the full Pauli twirling set.
