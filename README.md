@@ -54,13 +54,13 @@ Clone the repository to your local machine in your appropriate directory:
 git clone https://github.com/alibokhamseen/error_twirling.git
 ```
 
-### 2. Navigate to the Project Directory
+### 2. Navigate to the Implementaion Folder
 Move into the project's main directory:
 
 ```bash
 cd error_twirling/code
 ```
-
+### 3. To Use in Python:
 ```python
 from twirling import twirl
 ```
