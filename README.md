@@ -58,7 +58,7 @@ git clone https://github.com/alibokhamseen/error_twirling.git
 Move into the project's main directory:
 
 ```bash
-cd error_twirling
+cd error_twirling/code
 ```
 
 ```python
