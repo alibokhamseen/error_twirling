@@ -13,11 +13,11 @@ This project implements implemets twirling using the full Pauli set. Our work ta
 
 Pauli Twirling is implemented by the `twirl()` function.
 ```bash
-twirl(error: dict[str: dict]) -> dict[str: float]
+twirl(error: dict[str, dict]) -> dict[str, float]
 ```
 
 ### Inputs:
-- **error: dict[str: dict]**\
+- **error: dict[str, dict]**\
 A state-based noise channel.
 
 Example:
@@ -29,14 +29,15 @@ Example:
     "11" : {"IX": p1, "XI": p2, "XX": p3}
     }
    ```
-   The input variable "error" is a dictionary of states 01, 10, and 11. Each state is a dictionary of the Pauli operators and their associated probabilty. State 10 applies operators XX with probability p2 and XI with probability p3.
+   Note individual sums of error probabilities of each state shouldn't exceed 1.
+   
+   The "error" input to be twirled is a dictionary with states as keys whose values are error instructions formated as dictionaries. Note that it is optional to include identity operations. Whenever probabilities of error instructions associated to a state is less than one, we assign identity to complete the sum.
 
 ### Final Output:
-- **dict[str: dict]**: A dictionary of states, each state a dictionary of Pauli operators and their associated probability. Same structure as the input.
+- **dict[str, dict]**: Twirled channel as a Pauli mixture with associated probabilities.
 
-## Features
-- Simulates the twirling operation to calculate error probabilities.
-- Outputs results for use in quantum error correction simulations and analysis.
+## Main Feature:
+- Twirl highly customizable error models
 
 ## Installation
 
