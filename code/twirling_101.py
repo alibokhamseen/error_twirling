@@ -1,4 +1,4 @@
-"""Example for importing function to use in another project"""
+# Use example
 
 import twirling
 
