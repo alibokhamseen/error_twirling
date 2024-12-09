@@ -41,9 +41,10 @@ The error input to be twirled is a dictionary with states as keys whose values a
 - Twirl the error described in the Kraus operators using the full Pauli set
 
 ## Example: 
-available in [View the Tutorial Notebook](https://github.com/alibokhamseen/error_twirling/blob/main/code/twirling_101.py)
+Use case available in [View the Tutorial Notebook](https://github.com/alibokhamseen/error_twirling/blob/main/code/twirling_101.py)
 
 # Installation Instructions
+Currently, not available as a package, just a repository.
 Follow these steps to install and set up the this package:
 
 ### 1. Clone the Repository
