@@ -9,12 +9,12 @@ This project implements implemets twirling using the full Pauli set. Our work ta
 
 
 
-## How It Works
-
+# How It Works:
 Pauli Twirling is implemented by the `twirl()` function.
 ```bash
 twirl(error: dict[str, dict]) -> dict[str, float]
 ```
+
 
 ### Inputs:
 - **error: dict[str, dict]**\
@@ -39,7 +39,10 @@ Example:
 ## Main Feature:
 - Twirl highly customizable error models
 
-
+# More Technical Steps:
+- We take an error model as an input
+- construct Kraus operators
+- do twirling using the full Pauli set using the generated Kraus operators
 
 ## Example: 
 available in [View the Tutorial Notebook](code/twirling101.py)
