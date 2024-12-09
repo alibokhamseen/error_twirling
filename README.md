@@ -39,24 +39,29 @@ Example:
 ## Main Feature:
 - Twirl highly customizable error models
 
-## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/pauli-twirling.git
-   cd pauli-twirling
-   ```
-2. Set up a virtual environment and install dependencies:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
 
-## Example: Pauli Basis for the Noise Channel
-Define your noise channel in the `noise_channel.py` file. For example:
+## Example: 
+available in [View the Tutorial Notebook](code/twirling101.py)
+
+# Installation Instructions
+Follow these steps to install and set up the this package:
+
+### 1. Clone the Repository
+Clone the repository to your local machine in your appropriate directory:
+
+```bash
+git clone https://github.com/alibokhamseen/error_twirling.git
+```
+
+### 2. Navigate to the Project Directory
+Move into the project's main directory:
+
+```bash
+cd error_twirling
+```
 
 ```python
-noise_channel = {'IX': 0.2, 'IZ': 0.3, 'XI': 0.1, 'XX': 0.4}
-
+from twirling import twirl
+```
 
