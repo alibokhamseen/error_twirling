@@ -4,7 +4,7 @@ from sympy import Matrix
 
 
 
-def _find_generating_set(V: list[str]) -> list[str]: # for future use
+def _find_generating_set(V: list[str]) -> list[str]: # for future use 
     """
     Find the generating set of a given set of Pauli operators.
     
@@ -109,41 +109,6 @@ def _validate_error_model(error_model: dict[str, dict[str, float]]) -> bool:
     return True
 
 
-# def validate_kraus_operators(K: list[np.ndarray]) -> None:
-#     """
-#     Validate a list of Kraus operators to ensure they form a valid quantum channel.
-    
-#     Args:
-#         K (list of np.ndarray): List of Kraus operators.
-
-#     Raises:
-#         ValueError: If the completeness relation is not satisfied.
-#         TypeError: If any Kraus operator is not a NumPy array or if the list is empty.
-#         ValueError: If Kraus operators have inconsistent dimensions.
-#     """
-#     # Ensure the input is a list of NumPy arrays
-#     if not isinstance(K, list) or not all(isinstance(k, np.ndarray) for k in K):
-#         raise TypeError("Kraus operators must be a list of NumPy arrays.")
-
-#     # Ensure the list is not empty
-#     if len(K) == 0:
-#         raise ValueError("The list of Kraus operators cannot be empty.")
-
-#     # Check dimensional consistency
-#     dims = [k.shape for k in K]
-#     if not all(dim == dims[0] for dim in dims):
-#         raise ValueError("All Kraus operators must have the same dimensions.")
-
-#     # Ensure Kraus operators are square matrices
-#     if not all(k.shape[0] == k.shape[1] for k in K):
-#         raise ValueError("Each Kraus operator must be a square matrix.")
-
-#     # Validate completeness relation
-#     identity = np.eye(K[0].shape[0], dtype=np.complex128)
-#     completeness = sum(k.conj().T @ k for k in K)
-#     if not np.allclose(completeness, identity, atol=1e-10):
-#         raise ValueError("Kraus operators do not satisfy the completeness relation.")
-
 def validate_kraus_operators(K: list[np.ndarray]) -> None:
     """
     Validates Kraus operators for consistency and completeness.
@@ -216,14 +181,13 @@ def _get_pauli_probabilities(K: list[np.ndarray], W: list[str], P: Paulis) -> li
         c_w = 0
         E_m = np.zeros_like(w)
         for k in K:
-            # c_w += np.trace(w @ k @ k.conj().T) / d
             E_m += w @ k @ w.conj().T
         
         c_w = np.abs(np.trace(w @ E_m) / d)
         probabilities.append(c_w)
     return np.array(probabilities)
 
-def twirl(error: dict[str: dict]) -> dict[str: float]:
+def twirl(error: dict[str, dict]) -> dict[str: float]:
     """
     Perform twirling over a state-based error model.
     
@@ -259,21 +223,14 @@ def twirl(error: dict[str: dict]) -> dict[str: float]:
 
 
 def main():
+    # example
     p0, p1, p2, p3, p4, p5 = 0.3, 0.3, .3, .1, .2, .3
     error_model = {
     "01" : {"IX": p5},
     "10" : {"XX": p3, "XI": p4},
     "11" : {"IX": p0, "XI": p1, "XX": p2}
     }
-    error_model = {
-    "11" : {"XX": 0.1}
-    }
 
-    error = {
-        # "0" : {"I" : 1},
-        "1" : {"X" : 0.2}
-    }
-    
     twirling_results = twirl(error_model)
     print(twirling_results)
 
