@@ -60,7 +60,7 @@ Move into the project's main directory:
 ```bash
 cd error_twirling/code
 ```
-### 3. To Use in Python:
+### 3. To Use in Python
 ```python
 from twirling import twirl
 ```
