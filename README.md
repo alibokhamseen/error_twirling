@@ -1,19 +1,17 @@
-# error_twirling
+# Twirling Error Channels
 
-We twirl arbitrary error channels to get a mixture of pauli errors to use in fast stabilizer quantum simulations. We follow the procedure outlined in https://www.nature.com/articles/s41598-019-46722-7.
+We twirl arbitrary error channels to get a mixture of pauli errors to use in fast stabilizer quantum simulations. 
 
 
-$$
-\tau_W(\overline{M}) = \frac{1}{|W|} \sum_{w \in W} w \overline{M} w^\dagger
-$$
+# Pauli Twirling
 
-# Pauli Twirling Simulation
+This project implements implemets twirling using the full Pauli set. Our work takes a state-based-error-model (see below for details) and returns a Pauli twirled error channel.
 
-This project implements a quantum error correction technique called **Pauli Twirling**, which simplifies arbitrary noise channels into Pauli channels. Our work is based on the framework presented in *"Constructing Smaller Pauli Twirling Sets for Arbitrary Error Channels"* by Zhenyu Cai and Simon Benjamin, and aims to improve simulation efficiency by reducing the size of the twirling gate set.
+
 
 ## How It Works
 
-The Pauli Twirling method is completed entirely by the `twirl()` function.
+Pauli Twirling is implemented by the `twirl()` function.
 ```bash
 twirl(error: dict[str: dict]) -> dict[str: float]
 ```
